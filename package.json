@@ -1,0 +1,19 @@
+{
+  "name": "srchr",
+  "version": "0.0.0",
+  "description": "ERROR: No README.md file found!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "",
+  "license": "BSD",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "lodash": "~2.2.1",
+    "request": "~2.27.0",
+    "async": "~0.2.9",
+    "solr": "~0.2.2"
+  }
+}
