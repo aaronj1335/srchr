@@ -34,7 +34,7 @@ module.exports = function() {
   }
 
   // i dunno just limit it to one until we figure things out
-  urls.slice(0, 1).forEach(function(url) {
+  urls.slice(0, 5).forEach(function(url) {
     if (!fs.existsSync(fname(url))) {
       console.log('fetching', url);
       q.push(url);

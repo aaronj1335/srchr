@@ -26,7 +26,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask('dev', ['shell:solr']);
+  grunt.registerTask('dev', ['link', 'shell:solr']);
 
   // load tasks in 'tasks' directory
   fs.readdirSync('tasks')

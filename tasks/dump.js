@@ -1,5 +1,5 @@
 module.exports = function() {
-  var Q = require('Q');
+  var Q = require('q');
   var client = require('solr-client').createClient();
   var taskDone = this.async();
   var rowsQuery = client.createQuery()
