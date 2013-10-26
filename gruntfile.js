@@ -6,31 +6,37 @@ module.exports = function(grunt) {
     urls: 'etc/urls.json',
     logdir: 'logs',
     docdir: 'docs',
-    sitemapdir: 'sitemaps',
-    template: 'etc/index.tmpl',
-    sitemap: 'etc/sitemap.tmpl',
-    sitemapindex: 'etc/sitemapindex.tmpl'
   };
 
-  var config = {};
+  var config = {
+    clean: {
+      data: {src: ['solr/collection1/data/*']}
+    },
 
-  var tasks = fs.readdirSync('tasks')
-    .filter(/.js$/.test.bind(/.js$/))
+    shell: {
+      solr: {
+        options: {stdout: true},
+        command: 'solr ' + process.env.PWD + '/solr'
+      }
+    }
+  };
+
+  grunt.initConfig(config);
+
+  grunt.loadNpmTasks('grunt-shell');
+  grunt.loadNpmTasks('grunt-contrib-clean');
+
+  grunt.registerTask('dev', ['shell:solr']);
+
+  // load tasks in 'tasks' directory
+  fs.readdirSync('tasks')
+    .filter(RegExp.prototype.test.bind(/.js$/))
     .map(function(taskFile) {
       var name = taskFile.split('.')[0];
       var module = require('./tasks/' + name);
 
       config[name] = _.extend({}, {options: globalOptions});
-
-      return {name: name, module: module, desc: module.desc};
+      grunt.registerTask(name, module.desc, module);
     });
-
-  grunt.initConfig(config);
-
-  tasks.forEach(function(task) {
-    var args = [task.name, task.desc]
-      .concat(task.deps || [])
-      .concat([task]);
-    grunt.registerTask.apply(grunt, args);
-  });
 };
+
