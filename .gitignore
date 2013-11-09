@@ -1,4 +1,11 @@
-solr/collection1/data
 logs
+
+solr/collection1/data
 solr/lib
+solr/var/log/*log
+
 sphinx/data/.s*
+sphinx/data/db*
+sphinx/data/binlog*
+sphinx/var/log/*log
+sphinx/var/log/*pid

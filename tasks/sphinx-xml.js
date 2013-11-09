@@ -4,6 +4,7 @@ module.exports = function() {
   var Q = require('q');
   var parse = require('./../lib/parser');
   var readFile = Q.denodeify(fs.readFile);
+  var writeFile = Q.denodeify(fs.writeFile);
   var readdir = Q.denodeify(fs.readdir);
   var start = fs.readFileSync('sphinx/etc/templates/start.xml');
   var docsTemplateText = fs.readFileSync('sphinx/etc/templates/docs.tmpl');
@@ -36,13 +37,17 @@ module.exports = function() {
   function processFile(fname) {
     return readFile(options.logdir + '/' + fname)
       .then(function(data) {
-        var docs = parse(fname, data)
-          .map(function(doc) {
-            doc.id = _.uniqueId();
-            return doc;
-          });
+        var docs = parse(fname, data).map(function(doc) {
+          doc.id = _.uniqueId();
+          return doc;
+        });
         var docsXml = docsTemplate({docs: docs});
-        return Q.ninvoke(process.stderr, 'write', docsXml);
+        var dbFilename = 'sphinx/data/db' + docs[0].id + '.json';
+
+        return Q.all([
+          writeFile(dbFilename, JSON.stringify(docs)),
+          Q.ninvoke(process.stderr, 'write', docsXml)
+        ]);
       });
   }
 
