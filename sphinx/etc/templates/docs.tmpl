@@ -1,0 +1,8 @@
+<% docs.forEach(function(doc) { %>
+  <sphinx:document id="<%= doc.id %>">
+    <message><%= doc.message.escape() %></message>
+    <handle><%= doc.handle.escape() %></handle>
+    <sent><%= doc.sent %></sent>
+  </sphinx:document>
+
+<% }); %>

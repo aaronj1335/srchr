@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sphinx:docset>
+
+  <sphinx:schema>
+    <sphinx:field name="message"/>
+    <sphinx:field name="handle"/>
+    <sphinx:attr name="sent" type="timestamp"/>
+  </sphinx:schema>
+

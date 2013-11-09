@@ -11,14 +11,12 @@ module.exports = function() {
   var taskDone = this.async();
 
   function sequentiallyApply(fn, items) {
-    var promises = items.slice(1)
+    return items.slice(1)
       .reduce(function(previous, fname) {
         return previous.then(function() {
           return fn(fname);
         });
       }, fn(items[0]));
-
-    return Q.all(promises);
   }
 
   function isLog(fname) {
