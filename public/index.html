@@ -14,27 +14,34 @@
             <%= engine === 'solr'? 'Lucene' : 'Sphinx' %>
           </h2>
 
-          <table class=zebra>
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Message</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <% _.each(results, function(result) { %>
+          <% if (results.length) { %>
+            <table class=zebra>
+              <thead>
                 <tr>
-                  <td class=handle title="<%= result.sent.format('YYYY-MM-DD h:mm:ss A') %>">
-                    <%= result.handle %>
-                  </td>
-                  <td>
-                    <%= result.message %>
-                  </td>
+                  <th>User</th>
+                  <th>Message</th>
                 </tr>
-              <% }) %>
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                <% _.each(results, function(result) { %>
+                  <tr>
+                    <td class=handle title="<%= result.sent.format('YYYY-MM-DD h:mm:ss A') %>">
+                      <%= result.handle %>
+                    </td>
+                    <td>
+                      <%= result.message %>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          <% } else { %>
+            <p>
+              No results found.
+            </p>
+          <% } %>
+
         </div>
       <% }) %>
     </script>
