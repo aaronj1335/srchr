@@ -1,7 +1,9 @@
 # srchr
 
-side-by-side comparison of open source search engines for 30 days of irc logs
-from the node.js channel (based on [@izs's logs][logs])
+this is a side-by-side comparison of open source search engines for 30 days of
+irc logs from the node.js channel (based on [@izs's logs][logs]). it's a
+project for my information retrieval class at university of texas, [inf
+384h][ir].
 
 ## quickstart
 
@@ -45,3 +47,4 @@ crashed or been rebooted).
 [api]: htt://localhost:3000
 [deployment]: http://adorable-seal-larva.cs.utexas.edu:3000/
 [logs]: http://static.izs.me/irclogs/node.js/
+[ir]: http://courses.ischool.utexas.edu/Lease_Matt/2013/Fall/CS395T/
