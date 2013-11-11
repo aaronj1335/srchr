@@ -56,5 +56,5 @@
       }
     });
 
-  $('[type=search]').val('foo').trigger('keyup');
+  $('[type=search]').val('apple').trigger('keyup');
 })();
