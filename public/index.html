@@ -8,6 +8,11 @@
   </head>
   <body>
     <script type=text/x-lodash-template id=template>
+      <p>
+        <strong>Showing results for:</strong>
+        <span class=term><%= term %></span>
+      </p>
+
       <% _.each(data, function(results, engine) { %>
         <div class="<%= engine %> result">
           <h2>

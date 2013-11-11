@@ -20,20 +20,21 @@
         });
     }
   };
-  var template = _.template($('#template').html(), null, {variable: 'data'});
+  var template = _.template($('#template').html());
   var $results = $('.results');
   var $loading = $('.loading');
-
-  $('form[name=search]')
-    .find('input')
-      .on('keyup', _.debounce(function() {
+  var $search = $('form[name=search] [type=search]')
+      .on('keyup change', _.debounce(function() {
         var val = $(this).val();
 
-        if (val && val.length > 2) {
+        if (val && val.length > 2 && val !== store.term) {
+          store.term = val;
+          store.trigger('change:term', store.term);
+
           store.search = api.fetch(val)
             .then(function(result) {
               store.data = result;
-              store.trigger('change', store.data);
+              store.trigger('change:results', store.data);
             })
             .always(function() {
               store.trigger('search-stop');
@@ -44,8 +45,8 @@
       }, 300));
 
   store
-    .on('change', function(evt, data) {
-      $results.html(template(data));
+    .on('change:results', function(evt, data) {
+      $results.html(template({data: data, term: store.term}));
     })
     .on('search-start', function() {
       $loading.text('Loading...');
@@ -56,5 +57,11 @@
       }
     });
 
-  $('[type=search]').val('apple').trigger('keyup');
+  $('body').on('keyup', function(evt) {
+    if (evt.which === 191 && !$(':focus').length) {
+      $search.focus();
+    }
+  });
+
+  $('[type=search]').val('apple');
 })();
