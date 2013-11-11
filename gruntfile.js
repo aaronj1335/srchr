@@ -15,9 +15,11 @@ module.exports = function(grunt) {
     },
 
     shell: {
+      // we have to sleep because who friggin knows how long it'll take to
+      // start the jvm, but it's necessary to wait for the index task
       solrd: {
         options: {stdout: true},
-        command: 'nohup solr ' + process.env.PWD + '/solr > solr/var/log/output.log 2>&1 &'
+        command: '( nohup solr ' + process.env.PWD + '/solr > solr/var/log/output.log 2>&1 & ) && sleep 5'
       },
       'solrd-stop': {
         options: {stdout: true},
@@ -35,6 +37,11 @@ module.exports = function(grunt) {
         options: {stdout: true},
         command: 'searchd --config sphinx/etc/sphinx.conf --stop'
       }
+    },
+
+    concurrent: {
+      clean: ['clean:solr', 'clean:sphinx'],
+      index: ['solr-index', 'sphinx-index']
     }
   };
 
@@ -42,6 +49,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-concurrent');
 
   grunt.registerTask('dev-server', function() {
     var done = this.async();
@@ -58,10 +66,12 @@ module.exports = function(grunt) {
 
   grunt.registerTask('sphinx-index', ['shell:sphinx-index']);
   grunt.registerTask('index', [
-    'clean:solr',
-    'clean:sphinx',
-    'sphinx-index',
-    'solr-index'
+    'download-logs',
+    'solrd-stop',
+    'concurrent:clean',
+    'solrd',
+    'concurrent:index',
+    'solrd-stop'
   ]);
   grunt.registerTask('solrd', ['link', 'shell:solrd']);
   grunt.registerTask('solrd-stop', ['shell:solrd-stop']);
