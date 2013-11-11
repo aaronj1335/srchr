@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>full text search engine comparison</title>
+
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <script type=text/x-lodash-template id=template>
+      <% _.each(data, function(results, engine) { %>
+        <div class="<%= engine %> result">
+          <h2>
+            <%= engine === 'solr'? 'Lucene' : 'Sphinx' %>
+          </h2>
+
+          <table class=zebra>
+            <thead>
+              <tr>
+                <th>Handle</th>
+                <th>Message</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% _.each(results, function(result) { %>
+                <tr>
+                  <td class=handle title="<%= result.sent.format('YYYY-MM-DD h:mm:ss A') %>">
+                    <%= result.handle %>
+                  </td>
+                  <td>
+                    <%= result.message %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% }) %>
+    </script>
+
+    <form name=search action=javascript:void(0)>
+      <input type=search autofocus=true placeholder="Search..." />
+      <span class=loading></span>
+    </form>
+
+    <div class=results></div>
+
+    <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.2.1/lodash.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.4.0/moment.min.js"></script>
+    <script src="/js/index.js"></script>
+  </body>
+</html>

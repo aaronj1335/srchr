@@ -60,8 +60,13 @@ module.exports = function(grunt) {
       done();
     });
 
-    require('./lib/server').createServer().listen(3000);
-    grunt.log.writeln('listening on port 3000');
+    process.on('SIGQUIT', function() {
+      done();
+    });
+
+    require('./lib/api-server').createServer().listen(2999);
+    require('./lib/app-server').createServer().listen(3000);
+    grunt.log.writeln('api server listening on 2999, app server on 3000');
   });
 
   grunt.registerTask('sphinx-index', ['shell:sphinx-index']);

@@ -1,0 +1,35 @@
+body {
+  font: 14px Helvetica, sans-serif;
+  color: #444;
+}
+
+.zebra tr:nth-child(even) {
+  background-color: #eee;
+}
+
+td {
+  padding: 8px;
+}
+
+table {
+  border-spacing: 0;
+}
+
+.results table {
+  width: 100%;
+}
+
+.results td.handle {
+  color: #666;
+}
+
+.hidden {
+  display: none;
+}
+
+.result {
+  padding: 8px;
+  width: 49%;
+  box-sizing: border-box;
+  display: inline-block;
+}
