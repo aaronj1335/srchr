@@ -21,6 +21,8 @@
     "connect": "~2.11.0",
     "sphinxapi": "~1.1.1",
     "grunt-concurrent": "~0.4.1",
-    "proxy-middleware": "~0.5.0"
+    "proxy-middleware": "~0.5.0",
+    "google": "~0.3.2",
+    "moment": "~2.4.0"
   }
 }
