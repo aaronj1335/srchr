@@ -1,0 +1,30 @@
+{
+    "bitwise": true,
+    "browser": true,
+    "curly": false,
+    "eqeqeq": true,
+    "eqnull": true,
+    "forin": true,
+    "indent": 2,
+    "latedef": true,
+    "noarg": true,
+    "noempty": true,
+    "nonew": true,
+    "quotmark": true,
+    "trailing": true,
+    "undef": true,
+    "unused": true,
+    "expr": true,
+    "globals": {
+        "require": false,
+        "define": false,
+        "exports": false,
+        "console": false,
+        "process": false,
+        "__filename": false,
+        "__dirname": false,
+        "$": false,
+        "module": false
+    }
+}
+
