@@ -29,7 +29,11 @@ table {
 
 .result {
   padding: 8px;
-  width: 49%;
   box-sizing: border-box;
   display: inline-block;
 }
+
+.results-1 { width: 100%; }
+.results-2 { width: 49%; }
+.results-3 { width: 32%; }
+.results-4 { width: 24%; }

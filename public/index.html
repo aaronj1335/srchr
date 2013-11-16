@@ -7,16 +7,28 @@
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
-    <script type=text/x-lodash-template id=template>
+    <script type=text/x-lodash-template id=viewing>
+      <% _.each(_.keys(strings.engines), function(engine) { %>
+        <label>
+          <input  type=checkbox
+                  name=show-<%= engine %>-results
+                  value=<%= engine %>
+                  <%= model.viewing.indexOf(engine) >= 0 ? 'checked=true' : '' %> />
+          <%= strings.engines[engine] %>
+        </label>
+      <% }) %>
+    </script>
+
+    <script type=text/x-lodash-template id=results>
       <p>
         <strong>Showing results for:</strong>
-        <span class=term><%= term %></span>
+        <span class=term><%= model.term %></span>
       </p>
 
-      <% _.each(data, function(results, engine) { %>
-        <div class="<%= engine %> result">
+      <% _.each(model.results, function(results, engine) { %>
+        <div class="<%= engine %> result results-<%= _.keys(model.results).length %>">
           <h2>
-            <%= engine === 'solr'? 'Lucene' : 'Sphinx' %>
+            <%= strings.engines[engine] %>
           </h2>
 
           <% if (results.length) { %>
@@ -42,9 +54,13 @@
               </tbody>
             </table>
           <% } else { %>
-            <p>
-              No results found.
-            </p>
+            <table>
+              <tr>
+                <td>
+                  No results found.
+                </td>
+              </tr>
+            </table>
           <% } %>
 
         </div>
@@ -55,6 +71,8 @@
       <input type=search autofocus=true placeholder="Search..." />
       <span class=loading></span>
     </form>
+
+    <div class=viewing></div>
 
     <div class=results></div>
 

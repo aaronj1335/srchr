@@ -1,6 +1,104 @@
 /*global $,_,moment*/
 (function() {
-  var store = $({});
+  var results, viewing;
+
+  function Model(initialValues) {
+    this._events = $({});
+    _.extend(this, initialValues);
+  }
+
+  ['on', 'off', 'one', 'trigger'].forEach(function(evt) {
+    Model.prototype[evt] = function() {
+      return this._events[evt].apply(this._events, arguments);
+    };
+  });
+
+  Model.prototype.set = function(key, val) {
+    this[key] = val;
+    this.trigger('change', key, val);
+  };
+
+  Model.prototype.get = function(key) {
+    return this[key];
+  };
+
+  Model.prototype.computed = function(prop, deps, getter) {
+    getter = getter.bind(this);
+
+    this.on('change', function(evt, changedProp) {
+      if (deps.indexOf(changedProp) > -1)
+        this.trigger('change', prop, getter);
+    }.bind(this));
+
+    Object.defineProperty(this, prop, {get: getter});
+  };
+
+  var model = window.model = new Model({
+    data: null,
+    engines: ['solr', 'sphinx', 'google'],
+    viewing: ['solr', 'sphinx', 'google']
+  });
+
+  model.computed('results', ['data'], function() {
+    return _.pick(this.get('data'), this.get('viewing'));
+  });
+
+  model.computed('notViewing', ['viewing'], function() {
+    return _.difference(_.keys(strings.engines), this.get('viewing'));
+  });
+
+  var strings = {
+    engines: {
+      solr: 'Lucene',
+      sphinx: 'Sphinx',
+      google: 'Google'
+    }
+  };
+
+  function View(initialValues) {
+    _.extend(this, initialValues);
+    if (this.el)
+      this.$el = $(this.el), this.el = this.$el[0];
+    if (this.template)
+      this.template = _.template(this.template);
+    this.render();
+  }
+
+  View.prototype.render = function() {
+    if (this.$el && this.template)
+      this.$el.html(this.template({strings: this.strings, model: this.model}));
+  };
+
+  View.prototype.model = model;
+  View.prototype.strings = strings;
+
+  function ResultsView() {
+    View.apply(this, arguments);
+    this.model.on('change', function(evt, prop) {
+      if (prop in {data:true, viewing:true})
+        this.render();
+    }.bind(this));
+  }
+
+  ResultsView.prototype = new View();
+
+  function ViewingView() {
+    View.apply(this, arguments);
+    this.model.on('change', function(evt, prop) {
+      if (prop === 'viewing')
+        this.render();
+    }.bind(this));
+  }
+
+  ViewingView.prototype = new View();
+
+  ViewingView.prototype.render = function() {
+    var focus = this.$el.find(':focus').attr('name');
+    View.prototype.render.apply(this, arguments);
+    if (focus)
+      this.$el.find('[name=' + focus + ']').focus();
+  };
+
   var api = {
     fetch: function(searchString) {
       return $.ajax({
@@ -20,48 +118,59 @@
         });
     }
   };
-  var template = _.template($('#template').html());
-  var $results = $('.results');
+
+  results = new ResultsView({
+    el: $('.results'),
+    template: $('#results').html()
+  });
+
+  viewing = new ViewingView({
+    el: $('.viewing'),
+    template: $('#viewing').html()
+  });
+
   var $loading = $('.loading');
-  var $search = $('form[name=search] [type=search]')
-      .on('keyup change', _.debounce(function() {
-        var val = $(this).val();
+  var $search = $('body')
+    .on('keyup change', '[type=search]', _.debounce(function() {
+      var val = $(this).val();
 
-        if (val && val.length > 2 && val !== store.term) {
-          store.term = val;
-          store.trigger('change:term', store.term);
+      if (val && val.length > 2 && val !== model.get('term')) {
+        model.set('term', val);
 
-          store.search = api.fetch(val)
-            .then(function(result) {
-              store.data = result;
-              store.trigger('change:results', store.data);
-            })
-            .always(function() {
-              store.trigger('search-stop');
-            });
+        model.set('search', api.fetch(val)
+          .then(function(result) {
+            model.set('data', result);
+          })
+          .always(function() {
+            model.trigger('search-stop');
+          }));
 
-          store.trigger('search-start');
-        }
-      }, 300));
+        model.trigger('search-start');
+      }
+    }, 300))
+    .on('change', '[type=checkbox]', function() {
+      var viewing = $(this).closest('.viewing')
+        .find('[type=checkbox]:checked')
+        .map(function(i, el) {
+          return $(el).val();
+        });
 
-  store
-    .on('change:results', function(evt, data) {
-      $results.html(template({data: data, term: store.term}));
-    })
+      model.set('viewing', _.toArray(viewing));
+    });
+
+  model
     .on('search-start', function() {
       $loading.text('Loading...');
     })
     .on('search-stop', function() {
-      if (store.search.state() !== 'pending') {
+      if (model.get('search').state() !== 'pending')
         $loading.text('');
-      }
     });
 
   $('body').on('keyup', function(evt) {
-    if (evt.which === 191 && !$(':focus').length) {
+    if (evt.which === 191 && !$(':focus').length)
       $search.focus();
-    }
   });
 
-  $('[type=search]').val('apple');
+  $('[type=search]').val('apple').trigger('change');
 })();
