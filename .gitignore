@@ -9,3 +9,6 @@ sphinx/data/db*
 sphinx/data/binlog*
 sphinx/var/log/*log
 sphinx/var/log/*pid
+
+mongo/data/*
+mongo/var/*

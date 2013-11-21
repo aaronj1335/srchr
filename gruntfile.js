@@ -11,7 +11,8 @@ module.exports = function(grunt) {
   var config = {
     clean: {
       solr: {src: ['solr/collection1/data/*']},
-      sphinx: {src: ['sphinx/data/.s*', 'sphinx/data/db*']}
+      sphinx: {src: ['sphinx/data/.s*', 'sphinx/data/db*']},
+      mongo: {src: ['mongo/data/*', 'mongo/var/*log', 'mongo/var/*pid']}
     },
 
     shell: {
@@ -19,7 +20,7 @@ module.exports = function(grunt) {
       // start the jvm, but it's necessary to wait for the index task
       solrd: {
         options: {stdout: true},
-        command: '( nohup solr ' + process.env.PWD + '/solr > solr/var/log/output.log 2>&1 & ) && sleep 5'
+        command: '( nohup solr ' + process.cwd() + '/solr > solr/var/log/output.log 2>&1 & ) && sleep 5'
       },
       'solrd-stop': {
         options: {stdout: true},
@@ -36,12 +37,22 @@ module.exports = function(grunt) {
       'sphinxd-stop': {
         options: {stdout: true},
         command: 'searchd --config sphinx/etc/sphinx.conf --stop'
+      },
+      'mongod': {
+        options: {stdout: true},
+        command: 'mongod -f mongo/etc/mongodb.conf --pidfilepath ' +
+          process.cwd() + '/mongo/var/mongod.pid ' +
+          '--setParameter textSearchEnabled=true'
+      },
+      'mongod-stop': {
+        options: {stdout: true},
+        command: 'cat mongo/var/mongod.pid | xargs kill'
       }
     },
 
     concurrent: {
-      clean: ['clean:solr', 'clean:sphinx'],
-      index: ['solr-index', 'sphinx-index']
+      clean: ['clean:solr', 'clean:sphinx', 'clean:mongo'],
+      index: ['solr-index', 'sphinx-index', 'mongo-index']
     }
   };
 
@@ -57,6 +68,7 @@ module.exports = function(grunt) {
     process.on('SIGINT', function() {
       grunt.task.run('solrd-stop');
       grunt.task.run('sphinxd-stop');
+      grunt.task.run('mongod-stop');
       done();
     });
 
@@ -73,21 +85,30 @@ module.exports = function(grunt) {
   grunt.registerTask('index', [
     'download-logs',
     'solrd-stop',
+    'mongod-stop',
     'concurrent:clean',
+    'mongod',
     'solrd',
     'concurrent:index',
     'solrd-stop'
   ]);
   grunt.registerTask('solrd', ['link', 'shell:solrd']);
   grunt.registerTask('solrd-stop', ['shell:solrd-stop']);
+
   grunt.registerTask('sphinxd', ['shell:sphinxd']);
   grunt.registerTask('sphinxd-stop', ['shell:sphinxd-stop']);
+
+  grunt.registerTask('mongod', ['shell:mongod']);
+  grunt.registerTask('mongod-stop', ['shell:mongod-stop']);
+
   grunt.registerTask('stop', ['shell:solrd-stop', 'shell:sphinxd-stop']);
   grunt.registerTask('dev', [
     'solrd-stop',
     'sphinxd-stop',
+    'mongod-stop',
     'solrd',
     'sphinxd',
+    'mongod',
     'dev-server'
   ]);
 
