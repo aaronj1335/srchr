@@ -35,8 +35,8 @@
 
   var model = window.model = new Model({
     data: null,
-    engines: ['solr', 'sphinx', 'google'],
-    viewing: ['solr', 'sphinx', 'google']
+    engines: ['solr', 'sphinx', 'mongo', 'google'],
+    viewing: ['solr', 'sphinx', 'mongo', 'google']
   });
 
   model.computed('results', ['data'], function() {
@@ -51,6 +51,7 @@
     engines: {
       solr: 'Lucene',
       sphinx: 'Sphinx',
+      mongo: 'MongoDB',
       google: 'Google'
     }
   };

@@ -17,6 +17,11 @@ table {
 
 .results table {
   width: 100%;
+  table-layout: fixed;
+}
+
+.results th.handle {
+  width: 20%;
 }
 
 .results td.handle {
