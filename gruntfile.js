@@ -24,7 +24,7 @@ module.exports = function(grunt) {
       },
       'solrd-stop': {
         options: {stdout: true},
-        command: 'kill $(ps aux | grep solr | grep `pwd`/solr | grep -v grep | awk \'{print $2}\' | sort -r | head -1)'
+        command: 'kill $(ps aux | grep solr | grep -v grep | awk \'{print $2}\' | sort -r | head -1)'
       },
       'sphinx-index': {
         options: {stdout: true},
