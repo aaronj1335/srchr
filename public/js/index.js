@@ -40,7 +40,11 @@
   });
 
   model.computed('results', ['data'], function() {
-    return _.pick(this.get('data'), this.get('viewing'));
+    var viewing = this.get('viewing');
+
+    return _.filter(this.get('data'), function(result) {
+      return viewing.indexOf(result.engine) >= 0;
+    });
   });
 
   model.computed('notViewing', ['viewing'], function() {
@@ -110,7 +114,7 @@
         })
         .then(function(response) {
           _.each(response, function(results) {
-            _.each(results, function(result) {
+            _.each(results.docs, function(result) {
               result.sent = moment(result.sent);
             });
           });

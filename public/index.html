@@ -25,13 +25,13 @@
         <span class=term><%= model.term %></span>
       </p>
 
-      <% _.each(model.results, function(results, engine) { %>
-        <div class="<%= engine %> result results-<%= _.keys(model.results).length %>">
+      <% _.each(model.results, function(results) { %>
+        <div class="<%= results.engine %> result results-<%= _.keys(model.results).length %>">
           <h2>
-            <%= strings.engines[engine] %>
+            <%= strings.engines[results.engine] %>
           </h2>
 
-          <% if (results.length) { %>
+          <% if (results.docs.length) { %>
             <table class=zebra>
               <thead>
                 <tr>
@@ -41,13 +41,13 @@
               </thead>
 
               <tbody>
-                <% _.each(results, function(result) { %>
+                <% _.each(results.docs, function(doc) { %>
                   <tr>
-                    <td class=handle title="<%= result.sent.format('YYYY-MM-DD h:mm:ss A') %>">
-                      <%= result.handle %>
+                    <td class=handle title="<%= doc.sent.format('YYYY-MM-DD h:mm:ss A') %>">
+                      <%= doc.handle %>
                     </td>
                     <td>
-                      <%= result.message %>
+                      <%= doc.message %>
                     </td>
                   </tr>
                 <% }) %>
