@@ -47,8 +47,8 @@
             <% _.each(model.performanceResults, function(result) { %>
               <tr>
                 <td><%= strings.engines[result.engine] %></td>
-                <td><%= result.ap.toFixed(2) %></td>
-                <td><%= result.ndcg.toFixed(2) %></td>
+                <td><%= (result.ap || 0).toFixed(2) %></td>
+                <td><%= (result.ndcg || 0).toFixed(2) %></td>
               </tr>
             <% }) %>
           </tbody>
