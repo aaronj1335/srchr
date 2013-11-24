@@ -35,6 +35,7 @@
 
   var model = window.model = new Model({
     data: null,
+    sort: 'ap',
     engines: ['solr', 'sphinx', 'mongo', 'google'],
     viewing: ['solr', 'sphinx', 'mongo', 'google']
   });
@@ -49,6 +50,13 @@
 
   model.computed('notViewing', ['viewing'], function() {
     return _.difference(_.keys(strings.engines), this.get('viewing'));
+  });
+
+  model.computed('performanceResults', ['data', 'sort'], function() {
+    var notGoogle = _.filter(this.get('data'), function(result) {
+      return result.engine !== 'google';
+    });
+    return _.sortBy(notGoogle, this.get('sort')).reverse();
   });
 
   var strings = {
@@ -80,8 +88,11 @@
   function ResultsView() {
     View.apply(this, arguments);
     this.model.on('change', function(evt, prop) {
-      if (prop in {data:true, viewing:true})
+      if (prop in {data:true, viewing:true, sort:true})
         this.render();
+    }.bind(this));
+    this.$el.on('click', '[data-sort]', function(evt) {
+      this.model.set('sort', $(evt.target).data('sort'));
     }.bind(this));
   }
 
@@ -135,7 +146,8 @@
   });
 
   var $loading = $('.loading');
-  var $search = $('body')
+  var $search = $('[type=search]');
+  $('body')
     .on('keyup change', '[type=search]', _.debounce(function() {
       var val = $(this).val();
 
@@ -165,11 +177,11 @@
 
   model
     .on('search-start', function() {
-      $loading.text('Loading...');
+      $loading.removeClass('invisible');
     })
     .on('search-stop', function() {
       if (model.get('search').state() !== 'pending')
-        $loading.text('');
+        $loading.addClass('invisible');
     });
 
   $('body').on('keyup', function(evt) {

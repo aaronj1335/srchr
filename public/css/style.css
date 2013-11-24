@@ -7,12 +7,40 @@ body {
   background-color: #eee;
 }
 
-td {
+.inline-block {
+  display: inline-block;
+}
+
+td, th {
   padding: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 table {
   border-spacing: 0;
+}
+
+h2 small {
+  font-size: 0.6em;
+  color: #999;
+}
+
+.pull-left {
+  float: left;
+}
+
+input[type=search] {
+  line-height: 30px;
+  font-size: 16px;
+  -webkit-appearance: none;
+  border-radius: 16px;
+  border: 2px solid #999;
+  padding: 0 10px;
+}
+
+.invisible {
+  visibility: hidden;
 }
 
 .results table {
@@ -42,3 +70,27 @@ table {
 .results-2 { width: 49%; }
 .results-3 { width: 32%; }
 .results-4 { width: 24%; }
+
+.viewing, [name=search] {
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.viewing {
+  line-height: 40px;
+}
+
+.loading {
+  margin-top: 6px;
+  font-size: 28px;
+  width: 28px;
+}
+
+.performance th[data-sort] {
+  cursor: pointer;
+  padding-right: 12px;
+}
+
+.performance th[data-sort]:hover {
+  background-color: #eee;
+}

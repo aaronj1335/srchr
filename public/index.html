@@ -5,6 +5,7 @@
     <title>full text search engine comparison</title>
 
     <link rel="stylesheet" href="/css/style.css" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
   </head>
   <body>
     <script type=text/x-lodash-template id=viewing>
@@ -25,13 +26,49 @@
         <span class=term><%= model.term %></span>
       </p>
 
-      <% _.each(model.results, function(results) { %>
-        <div class="<%= results.engine %> result results-<%= _.keys(model.results).length %>">
+      <% if (model.data) { %>
+        <table class="performance zebra inline-block">
+          <thead>
+            <tr>
+              <th>
+                Engine
+              </th>
+              <th data-sort=ap>
+                AP
+                <i class="fa fa-chevron-down <%= model.sort === 'ap'? '' : 'invisible' %>"></i>
+              </th>
+              <th data-sort=ndcg>
+                nDCG
+                <i class="fa fa-chevron-down <%= model.sort === 'ndcg'? '' : 'invisible' %>"></i>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <% _.each(model.performanceResults, function(result) { %>
+              <tr>
+                <td><%= strings.engines[result.engine] %></td>
+                <td><%= result.ap.toFixed(2) %></td>
+                <td><%= result.ndcg.toFixed(2) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+
+      <% _.each(model.performanceResults, function(result) { %>
+
+      <% }) %>
+
+      <% _.each(model.results, function(result) { %>
+        <div class="<%= result.engine %> result results-<%= _.keys(model.results).length %>">
           <h2>
-            <%= strings.engines[results.engine] %>
+            <%= strings.engines[result.engine] %>
+            <small>
+              <%= result.duration / 1000 %> <i class="fa fa-clock-o"></i>
+            </small>
           </h2>
 
-          <% if (results.docs.length) { %>
+          <% if (result.docs.length) { %>
             <table class=zebra>
               <thead>
                 <tr>
@@ -41,9 +78,9 @@
               </thead>
 
               <tbody>
-                <% _.each(results.docs, function(doc) { %>
+                <% _.each(result.docs, function(doc) { %>
                   <tr>
-                    <td class=handle title="<%= doc.sent.format('YYYY-MM-DD h:mm:ss A') %>">
+                    <td class=handle title="Sent by <%= doc.handle %> on <%= doc.sent.format('YYYY-MM-DD h:mm:ss A') %>">
                       <%= doc.handle %>
                     </td>
                     <td>
@@ -67,10 +104,11 @@
       <% }) %>
     </script>
 
-    <form name=search action=javascript:void(0)>
+    <form name=search action=javascript:void(0) class=pull-left>
       <input type=search autofocus=true placeholder="Search..." />
-      <span class=loading></span>
     </form>
+
+    <i class="fa fa-spinner loading fa-spin pull-left"></i>
 
     <div class=viewing></div>
 
