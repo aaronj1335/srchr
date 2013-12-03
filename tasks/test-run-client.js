@@ -1,3 +1,13 @@
+/**
+ * test run client
+ *
+ * grunt task for querying everthing in `etc/searches.txt` and calculating
+ * performance results.
+ *
+ * assumes that the other servers are already running.
+ *
+ * this code is unforgivably ugly
+ */
 function trim(s) {
   return s.replace(/\s+$/, '').replace(/^\s+/, '');
 }
