@@ -12,3 +12,5 @@ sphinx/var/log/*pid
 
 mongo/data/*
 mongo/var/*
+
+google/var/*
