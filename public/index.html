@@ -60,10 +60,6 @@
         </table>
       <% } %>
 
-      <% _.each(model.performanceResults, function(result) { %>
-
-      <% }) %>
-
       <% _.each(model.results, function(result) { %>
         <div class="<%= result.engine %> result results-<%= _.keys(model.results).length %>">
           <h2>
@@ -83,7 +79,7 @@
               </thead>
 
               <tbody>
-                <% _.each(result.docs, function(doc) { %>
+                <% _.each(result.docs.slice(0, 10), function(doc) { %>
                   <tr>
                     <td class=handle title="Sent by <%= doc.handle %> on <%= doc.sent.format('YYYY-MM-DD h:mm:ss A') %>">
                       <%= doc.handle %>
