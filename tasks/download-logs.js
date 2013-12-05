@@ -11,6 +11,8 @@ module.exports = function() {
     return options.logdir + '/' + _.last(url.split('/'));
   }
 
+  // we want to download the logs 20 at a time since the network is probably
+  // the bottleneck
   var q = async.queue(function(url, done) {
     request(url, function(err, response) {
       if (err) {
@@ -33,7 +35,7 @@ module.exports = function() {
     fs.mkdirSync(options.logdir);
   }
 
-  // i dunno just limit it to one until we figure things out
+  // here is where we limit things to the first month(ish) of chat logs
   urls.slice(0, 32).forEach(function(url) {
     if (!fs.existsSync(fname(url))) {
       console.log('fetching', url);
