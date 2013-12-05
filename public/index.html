@@ -41,6 +41,10 @@
                 nDCG
                 <i class="fa fa-chevron-down <%= model.sort === 'ndcg'? '' : 'invisible' %>"></i>
               </th>
+              <th data-sort=rap>
+                R-Precision
+                <i class="fa fa-chevron-down <%= model.sort === 'rap'? '' : 'invisible' %>"></i>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -49,6 +53,7 @@
                 <td><%= strings.engines[result.engine] %></td>
                 <td><%= (result.ap || 0).toFixed(2) %></td>
                 <td><%= (result.ndcg || 0).toFixed(2) %></td>
+                <td><%= (result.rap || 0).toFixed(2) %></td>
               </tr>
             <% }) %>
           </tbody>
