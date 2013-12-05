@@ -47,6 +47,10 @@ module.exports = function(grunt) {
       'mongod-stop': {
         options: {stdout: true},
         command: 'cat mongo/var/mongod.pid | xargs kill'
+      },
+      cloc: {
+        options: {stdout: true},
+        command: 'cloc gruntfile.js lib public tasks'
       }
     },
 
@@ -111,6 +115,8 @@ module.exports = function(grunt) {
     'mongod',
     'dev-server'
   ]);
+
+  grunt.registerTask('cloc', ['shell:cloc']);
 
   // load tasks in 'tasks' directory
   fs.readdirSync('tasks')
