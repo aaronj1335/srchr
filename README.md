@@ -80,7 +80,7 @@ this project proceeded in 3 main phases:
 
 we downloaded [the original logs][logs], which were grouped by day and included
 a lot of cruft from the irc client that stored them (code for
-[downloading][download-task] and [parsing][parser]).
+[downloading][downloading] and [parsing][parser]).
 
 we then copied them into a directory structure with one file per irc message:
 
